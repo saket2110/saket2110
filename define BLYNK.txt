@@ -1,0 +1,270 @@
+#define BLYNK_TEMPLATE_ID "TMPLbXT0aeYi"
+#define BLYNK_TEMPLATE_NAME "speed control"
+#define BLYNK_AUTH_TOKEN "6WMOUyUhAMMMU3tdKBP6MyOPWuOQfx-r"
+
+#define BLYNK_PRINT Serial
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+char auth[] = BLYNK_AUTH_TOKEN;
+char ssid[] = "pas"; // Change your Wifi/ Hotspot Name
+char pass[] = "8878569806"; // Change your Wifi/ Hotspot Password
+
+BlynkTimer timer;
+
+#define fire ÿD7
+
+int fire_Val ÿ= 0; ÿ
+
+void setup() //Setup function - only function that is run in deep sleep mode
+{
+ÿ Serial.begin(9600); //Start the serial output at 9600 baud
+ÿ pinMode(fire, ÿINPUT);
+ÿ
+ÿ Blynk.begin(auth, ssid, pass);//Splash screen delay
+ÿ delay(2000);
+ÿ timer.setInterval(500L, mySensor);
+}
+
+void loop() //Loop function
+{
+ÿ Blynk.run();
+ÿ timer.run();
+}
+
+void mySensor()
+{
+ÿ fire_Val = ÿdigitalRead(fire);
+ÿ
+ÿ if (fire_Val == LOW)
+ÿ {
+ÿ ÿ Blynk.logEvent("speed_control","VEHICLE ON MAX SPEED");
+ÿ Blynk.virtualWrite(V0, 0);
+ÿ ÿ }
+
+ÿ else
+ÿ {
+ÿ ÿBlynk.virtualWrite(V0, 1);
+ÿ ÿ
+ÿ }
+
+ÿ
+}
+ÿ#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+
+#include <SPI.h>
+#include <MFRC522.h>
+
+ÿ
+#define SS_PIN 10
+#define RST_PIN 9
+
+MFRC522 mfrc522(SS_PIN, RST_PIN); ÿ // Create MFRC522 instance.
+int m1=5;
+int m2=4;
+int m3=7;
+int m4=8;
+int m5=2;
+
+int en=6;
+
+int not1=3;
+ÿint BUTTON1 = A0;
+ÿ int BUTTON2 = A1;
+ÿ ÿint BUTTON3 = A2;
+ÿ ÿ int BUTTON4 = A3;
+#define ir_back ÿA7
+int y=0;
+int x=0;
+int speed1;
+ÿ ÿ LiquidCrystal_I2C lcd(0x27,16,2); ÿ
+void setup()
+{
+ÿ Serial.begin(9600); ÿ // Initiate a serial communication
+ÿ lcd.init(); ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ// initialize the lcd
+ÿ lcd.backlight();
+pinMode(m1,OUTPUT);
+pinMode(m2,OUTPUT);
+pinMode(m3,OUTPUT);
+pinMode(m4,OUTPUT);
+pinMode(en,OUTPUT);
+pinMode(m5,OUTPUT);
+
+pinMode(BUTTON1, INPUT);
+pinMode(BUTTON2, INPUT);
+pinMode(BUTTON3, INPUT);
+pinMode(BUTTON4, INPUT);
+ÿ pinMode(ir_back, INPUT);
+pinMode(en, OUTPUT);
+
+pinMode(not1, OUTPUT);
+ÿ SPI.begin(); ÿ ÿ ÿ// Initiate ÿSPI bus
+ÿ mfrc522.PCD_Init(); ÿ // Initiate MFRC522
+ÿ Serial.println("Put your card to the reader...");
+ÿ Serial.println();
+
+}
+void loop()
+{
+ÿ
+
+int pb1=digitalRead(A0);
+int pb2=digitalRead(A1);
+int pb3=digitalRead(A2);
+int pb4=digitalRead(A3);
+
+ÿ if(pb1==1)
+ÿ {
+digitalWrite(m5,LOW);
+analogWrite(en,000);
+delay(20);
+Serial.print("motor1");
+Serial.println(pb1);
+speed1=0;
+x=0;
+ÿ}
+ÿ if(pb2==1)
+ÿ {
+digitalWrite(m5,HIGH);
+
+analogWrite(en,50);
+delay(20);
+Serial.print("motor ÿ2");
+Serial.println(pb2);
+speed1=50;
+x=0;
+}
+ÿ if(pb3==1)
+ÿ {
+digitalWrite(m5,HIGH);
+
+analogWrite(en,90);
+delay(20);
+Serial.print("motor3");
+Serial.println(pb3);
+speed1=90;
+x=0;
+ÿ}
+ÿ if(pb4==1)
+ÿ if(x==0)
+ÿ {
+digitalWrite(m5,HIGH);
+analogWrite(en,1000);
+delay(20);
+Serial.print("pb4= ÿ");
+Serial.println(pb4);
+speed1=100;
+x++;
+ÿ}
+ÿSerial.print("x= ÿ");
+ÿSerial.println(x);
+ÿSerial.print("y= ÿ");
+ÿSerial.println(y);
+ÿ int ir_backk =analogRead(ir_back);
+Serial.print("ir_backk= ");
+Serial.println(ir_backk);
+ÿif (ir_backk<= 24)
+{ ÿ
+digitalWrite(m3,HIGH);
+digitalWrite(m4,LOW);
+ÿdelay(200);
+digitalWrite(m3,LOW);
+digitalWrite(m4,LOW);
+ÿdelay(2000); ÿ
+digitalWrite(m3,LOW);
+digitalWrite(m4,HIGH);
+ÿdelay(200);
+digitalWrite(m3,LOW);
+digitalWrite(m4,LOW);
+ÿdelay(2000); ÿ
+ÿ
+ÿx=0; ÿ
+ÿy=0;
+}
+else
+{
+digitalWrite(m3,LOW);
+digitalWrite(m4,LOW);
+ÿdelay(2000); ÿ
+}
+
+if (x>=1)
+if (y>=1)
+{
+ÿdigitalWrite(not1,HIGH);
+ÿ ÿSerial.println("led");
+ÿ ÿdigitalWrite(m5,LOW);
+analogWrite(en,000);
+delay(20);
+ÿ }
+ÿif(x==0)
+{
+digitalWrite(not1,LOW); ÿ
+} ÿ
+ÿif(y==1)
+{
+ÿ ÿlcd.clear();
+ÿ lcd.setCursor(0,0);
+ÿ lcd.print("vehicle in site");
+ÿ lcd.setCursor(0,1);
+ÿlcd.print("speed= ÿ");
+ÿ lcd.print(speed1);
+}
+else
+{
+ÿ ÿlcd.clear();
+ÿ lcd.setCursor(0,0);
+ÿ lcd.print("welcom to RFID pro");
+ÿ lcd.setCursor(0,1);
+ÿlcd.print("site empty");
+}
+ÿ // Look for new cards
+ÿ if ( ! mfrc522.PICC_IsNewCardPresent())
+ÿ {
+ÿ ÿ return;
+ÿ }
+ÿ // Select one of the cards
+ÿ if ( ! mfrc522.PICC_ReadCardSerial())
+ÿ {
+ÿ ÿ return;
+ÿ }
+ÿ //Show UID on serial monitor
+ÿ Serial.print("UID tag :");
+ÿ String content= "";
+ÿ byte letter;
+ÿ for (byte i = 0; i < mfrc522.uid.size; i++)
+ÿ {
+ÿ ÿ ÿSerial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+ÿ ÿ ÿSerial.print(mfrc522.uid.uidByte[i], HEX);
+ÿ ÿ ÿcontent.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+ÿ ÿ ÿcontent.concat(String(mfrc522.uid.uidByte[i], HEX));
+ÿ }
+ÿ Serial.println();
+ÿ Serial.print("Message : ");
+ÿ content.toUpperCase();
+ÿ
+ÿif(content.substring(1) == "F1 A0 E9 1B") ÿ//change here the UID of the card/cards that you want to give access
+
+ÿ {
+ÿ digitalWrite(m1,LOW);
+digitalWrite(m2,HIGH);
+delay(200);
+digitalWrite(m1,LOW);
+digitalWrite(m2,LOW);
+ÿdelay(2000);
+ÿdigitalWrite(m1,HIGH);
+digitalWrite(m2,LOW);
+ÿdelay(200);
+ÿdigitalWrite(m1,LOW);
+digitalWrite(m2,LOW);
+ÿdelay(2000);
+ÿ Serial.println("motor");
+ÿ y++;
+ÿ lcd.setCursor(0,1);
+ÿlcd.print("speed= ÿ");
+ÿ lcd.print(en);
+ÿ }
+ÿ
+}
