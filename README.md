@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @saket2110
 - My full name is Saket Kumar Mishra
-- 👀 I’m interested in Electrical circuits and designing
+- 👀 I’m interested in Electrical circuits and Designing
 - 🌱 I’m currently pursuing M.tech from National Institute of Technology,Jamshedpur
 - 💞️ I’m looking to collaborate on my project work speed control of e-vehicle using RFID and getting security notification through IOT
 - 📫 Reach me @ saketmishragdv@gmail.com or connect with me on LinkedIn @ https://www.linkedin.com/in/saket-kumar-mishra-14582a130?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app
